@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -19,8 +19,8 @@ class BlogOut(BaseModel):
     content: str
     owner_id: int
 
-    class from_attributes:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
+
 
 class RefreshRequest(BaseModel):
     refresh_token: str
