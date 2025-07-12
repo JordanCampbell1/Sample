@@ -9,7 +9,9 @@ import uvicorn
 
 # Ensure the .env file is loaded
 from dotenv import load_dotenv
+
 load_dotenv()
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -28,15 +30,18 @@ async def lifespan(app: FastAPI):
     # --- On Shutdown ---
     print("🔻 API shutdown complete.")
 
+
 app = FastAPI(lifespan=lifespan)
 
 # Include Routers
 app.include_router(auth_routes.router, prefix="/auth", tags=["Authentication"])
 app.include_router(blog_routes.router, prefix="/api", tags=["Blogs"])
 
+
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the ZS Sample API!"}
+
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="localhost", port=8000, reload=True)

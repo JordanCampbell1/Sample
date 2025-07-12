@@ -3,6 +3,7 @@ from sqlalchemy.orm import relationship
 from database import Base
 from datetime import datetime
 
+
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
@@ -11,7 +12,9 @@ class User(Base):
 
     # relationship to Blog (one user has many blogs)
     blogs = relationship("Blog", back_populates="owner")
-    refresh_tokens = relationship("RefreshToken", back_populates="user", cascade="all, delete")
+    refresh_tokens = relationship(
+        "RefreshToken", back_populates="user", cascade="all, delete"
+    )
 
 
 class Blog(Base):

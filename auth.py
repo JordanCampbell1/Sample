@@ -10,12 +10,12 @@ from database import get_db
 from models import RefreshToken, User
 
 
-
 def create_access_token(data: dict, expires_delta: timedelta = None):
     to_encode = data.copy()
     expire = datetime.utcnow() + (expires_delta or timedelta(minutes=15))
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+
 
 def decode_access_token(token: str):
     try:
@@ -24,7 +24,8 @@ def decode_access_token(token: str):
     except JWTError:
         return None
 
-def create_refresh_token(user_id: int, expires_at: int ,db: Session):
+
+def create_refresh_token(user_id: int, expires_at: datetime, db: Session):
     token = secrets.token_urlsafe(64)  # ~384 bits of entropy
 
     refresh_token = RefreshToken(token=token, user_id=user_id, expires_at=expires_at)
@@ -32,12 +33,15 @@ def create_refresh_token(user_id: int, expires_at: int ,db: Session):
     db.commit()
     db.refresh(refresh_token)
     return refresh_token
-        
+
 
 # OAuth2 scheme — looks for Authorization: Bearer <token>
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+
+def get_current_user(
+    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+):
     # print(f"Received token: {token}")  # Debugging line
     # paylod = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
     # print(f"Decoded payload: {paylod}")  # Debugging line
@@ -68,4 +72,3 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     if user is None:
         raise credentials_exception
     return user
-

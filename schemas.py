@@ -1,17 +1,21 @@
 from typing import Optional
 from pydantic import BaseModel, ConfigDict, EmailStr
 
+
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
+
 
 class BlogCreate(BaseModel):
     title: str
     content: str
 
+
 class BlogUpdate(BaseModel):
     title: Optional[str] = None
     content: Optional[str] = None
+
 
 class BlogOut(BaseModel):
     id: int
@@ -24,6 +28,7 @@ class BlogOut(BaseModel):
 
 class RefreshRequest(BaseModel):
     refresh_token: str
+
 
 class LoginRequest(BaseModel):
     email: EmailStr
