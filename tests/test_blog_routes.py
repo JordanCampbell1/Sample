@@ -1,4 +1,4 @@
-from redis_cache import redis_client
+from redis_utils import redis_client
 
 
 def test_create_blog(client):

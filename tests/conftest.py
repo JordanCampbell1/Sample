@@ -6,7 +6,7 @@ from main import app
 from auth import get_current_user
 from models import User
 
-from redis_cache import redis_client
+from redis_utils import redis_client
 
 
 # Create a clean test DB schema before tests

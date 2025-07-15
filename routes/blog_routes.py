@@ -5,7 +5,7 @@ from schemas import BlogCreate, BlogOut, BlogUpdate
 from models import Blog, User
 from typing import List
 from database import get_db
-from redis_cache import redis_client
+from redis_utils import publish_event, redis_client
 import json
 
 router = APIRouter(prefix="/blog")
@@ -13,7 +13,7 @@ router = APIRouter(prefix="/blog")
 
 # Create Blog
 @router.post("", response_model=BlogOut)
-def create_blog(
+async def create_blog(
     blog: BlogCreate,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -31,6 +31,9 @@ def create_blog(
     redis_client.delete(user_cache_key)
     # Clear cache for all blogs
     redis_client.delete("blogs_all")
+
+    await publish_event("updates", f"New blog: {new_blog.title}")
+
 
     return new_blog
 
