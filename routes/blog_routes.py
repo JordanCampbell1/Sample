@@ -32,15 +32,14 @@ async def create_blog(
     # Clear cache for all blogs
     redis_client.delete("blogs_all")
 
-    await publish_event("updates", f"New blog: {new_blog.title}")
-
+    await publish_event("create_blog", f"New blog: {new_blog.title}")
 
     return new_blog
 
 
 # Get All Blogs
 @router.get("/all", response_model=List[BlogOut])
-def get_all_blogs(
+async def get_all_blogs(
     db: Session = Depends(get_db), current_user: User = Depends(get_current_user)
 ):
     cache_key = "blogs_all"
@@ -65,7 +64,7 @@ def get_all_blogs(
 
 # Get All Blogs (for current user)
 @router.get("", response_model=List[BlogOut])
-def get_blogs(
+async def get_blogs(
     db: Session = Depends(get_db), current_user: User = Depends(get_current_user)
 ):
 
@@ -95,7 +94,7 @@ def get_blogs(
 
 # Get Single Blog by ID (for current user)
 @router.get("/{blog_id}", response_model=BlogOut)
-def get_blog(
+async def get_blog(
     blog_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -133,7 +132,7 @@ def get_blog(
 
 # Update Blog (for current user)
 @router.put("/{blog_id}", response_model=BlogOut)
-def update_blog(
+async def update_blog(
     blog_id: int,
     updated_data: BlogUpdate,
     db: Session = Depends(get_db),
@@ -163,6 +162,8 @@ def update_blog(
     # Clear cache for all blogs
     redis_client.delete("blogs_all")
 
+    await publish_event("update_blog", f"Updated blog: {blog.title}")
+
     db.commit()
     db.refresh(blog)
     return blog
@@ -170,7 +171,7 @@ def update_blog(
 
 # Delete Blog (for current user)
 @router.delete("/{blog_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_blog(
+async def delete_blog(
     blog_id: int,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),

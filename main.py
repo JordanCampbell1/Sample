@@ -5,8 +5,7 @@ from sqlalchemy import text
 from sqlalchemy.exc import OperationalError
 from contextlib import asynccontextmanager
 import uvicorn
-from fastapi.middleware.cors import CORSMiddleware  
-
+from fastapi.middleware.cors import CORSMiddleware
 
 
 # Ensure the .env file is loaded

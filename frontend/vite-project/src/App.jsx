@@ -1,40 +1,23 @@
 // src/App.jsx
 import React, { useEffect, useState } from "react";
 import "./App.css";
+import Create_Blog from "./pages/Create_Blog/Create_Blog";
+import Update_Blog from "./pages/Update_Blog/Update_Blog";
+import { Routes, Route } from 'react-router-dom';
+
 
 function App() {
-  const [events, setEvents] = useState([]);
-
-  useEffect(() => {
-    const eventSource = new EventSource("http://localhost:8000/api/sse/events");
-
-    eventSource.onmessage = (event) => {
-      setEvents((prevEvents) => [event.data, ...prevEvents]);
-    };
-
-    eventSource.onerror = () => {
-      console.error("EventSource failed.");
-      eventSource.close();
-    };
-
-    return () => {
-      eventSource.close();
-    };
-  }, []);
-
+  
+    
   return (
-    <div className="container">
-      <h1>📡 Live Updates</h1>
-      <div className="event-list">
-        {events.length === 0 && <p className="empty">Waiting for events...</p>}
-        {events.map((event, index) => (
-          <div className="event" key={index}>
-            {event}
-          </div>
-        ))}
-      </div>
-    </div>
+   <Routes>
+      <Route path="/create" element={<Create_Blog />} />
+      <Route path="/update" element={<Update_Blog />} />
+      {/* catch-all route */}
+      <Route path="*" element={<Create_Blog />} />
+    </Routes>
   );
 }
+
 
 export default App;
