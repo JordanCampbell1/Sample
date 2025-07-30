@@ -5,7 +5,8 @@ from schemas import BlogCreate, BlogOut, BlogUpdate
 from models import Blog, User
 from typing import List
 from database import get_db
-from redis_utils import publish_event, redis_client
+from redis_utils import redis_client
+from kafka_producer import publish_event
 import json
 
 router = APIRouter(prefix="/blog")
@@ -18,6 +19,8 @@ async def create_blog(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    print(f"Creating blog for user {current_user.id}: {blog.title}")
+
     new_blog = Blog(title=blog.title, content=blog.content, owner_id=current_user.id)
     db.add(new_blog)
     db.commit()
