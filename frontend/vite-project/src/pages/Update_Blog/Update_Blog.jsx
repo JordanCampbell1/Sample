@@ -8,7 +8,7 @@ function Update_Blog() {
   useEffect(() => {
     const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMSIsImV4cCI6MTc1MzEzMDY2Mn0.lcZGgUJmaGq2xTgUCKYjtH445ozQI5vIb3peJ5ZA_-Q"
     const channel = "update_blog";
-    const eventSource = new EventSource(`http://10.54.224.32:8000/api/sse/events?channel=${channel}&token=${token}`);
+    const eventSource = new EventSource(`http://localhost:8000/api/sse/events?channel=${channel}&token=${token}`);
 
     eventSource.onmessage = (event) => {
       setEvents((prevEvents) => [event.data, ...prevEvents]);
